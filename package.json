@@ -1,0 +1,12 @@
+{
+  "name": "socks5-proxy-stream",
+  "version": "0.1.0",
+  "description": "A SOCKS v5 proxy implemented as a Node duplex stream",
+  "main": "index.js",
+  "repository": {
+  	"type": "git",
+  	"url": "git+ssh://git@github.com:StewartAtkins/node-socks5-proxy-stream.git"
+  },
+  "author": "Stewart Atkins",
+  "license": "BSD"
+}

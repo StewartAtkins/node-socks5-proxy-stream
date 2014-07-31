@@ -1,0 +1,14 @@
+{
+  "name": "socks5-proxy-stream-websocket-demo",
+  "version": "0.0.0",
+  "description": "A simple demo of the socks5-proxy-stream module over websocket",
+  "main": "index.js",
+  "private": true,
+  "author": "Stewart Atkins",
+  "license": "BSD",
+  "dependencies": {
+    "express": "^4.7.2",
+    "ws": "^0.4.31",
+    "ws-binary-stream": "git+ssh://git@github.com:StewartAtkins/node-ws-binary-stream.git"
+  }
+}

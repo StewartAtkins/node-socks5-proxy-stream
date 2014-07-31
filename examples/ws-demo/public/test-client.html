@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Websocket Test</title>
+		<script type="text/javascript">
+			var wsUri = "ws://127.0.0.1:8080/";
+			var output;
+			function init() {
+				output = document.getElementById("output");
+				testWebSocket();
+			}
+			function testWebSocket() {
+				websocket = new WebSocket(wsUri);
+				websocket.binaryType = "arraybuffer";
+				websocket.onopen = function(evt) {
+					onOpen(evt)
+				};
+				websocket.onclose = function(evt) {
+					onClose(evt)
+				};
+				websocket.onmessage = function(evt) {
+					onMessage(evt)
+				};
+				websocket.onerror = function(evt) {
+					onError(evt)
+				};
+			}
+			var state = 0;
+			function onOpen(evt) {
+				console.log("Socket connected");
+				var buf = new ArrayBuffer(2);
+				var view = new Uint8Array(buf);
+				view[0] = 5;
+				view[1] = 0;
+				doSend(buf);
+			}
+			function onClose(evt) {
+				console.log("Socket disconnected");
+			}
+			var domain = "www.ipchicken.com";
+			var path = "/";
+			function onMessage(evt) { 
+				var data = new Uint8Array(evt.data);
+				if(state === 0){
+					console.log("Got hello response");
+					console.log("Protocol version: ", data[0]);
+					console.log("Auth method: ", data[1]);
+					state = 1;
+					var reply = new ArrayBuffer(7 + domain.length);
+					var view = new Uint8Array(reply);
+					view[0] = 5;
+					view[1] = 1;
+					view[2] = 0;
+					view[3] = 3;
+					view[4] = domain.length;
+					for(var i= 0; i < domain.length; i++){
+						view[5+i] = domain.charCodeAt(i);
+					}
+					view[ 5 + domain.length] = 0;
+					view[ 6 + domain.length] = 80;
+					doSend(reply);
+				}else if(state === 1){
+					console.log("Got connection response");
+					console.log("error: ", data[1]);
+					if(data[1] === 0){
+						var req = "GET "+path+" HTTP/1.0\r\nHost: "+domain+"\r\nConnection: close\r\n\r\n";
+						var reply = new ArrayBuffer(req.length);
+						var view = new Uint8Array(reply);
+						for(var i=0;i<req.length; i++){
+							view[i] = req.charCodeAt(i);
+						}
+						state = 2;
+						doSend(reply);
+					}else{
+						websocket.close();
+					}
+				}else{
+					console.log("Got message in state ", state);
+					console.log("Message length: ", data.byteLength);
+					console.log(data);
+					console.log("Translation: ");
+					console.log(String.fromCharCode.apply(null, data));
+					writeToScreen(String.fromCharCode.apply(null, data));
+				}
+			}  
+			function onError(evt) { 
+				writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data); 
+			}  
+			function doSend(message) { 
+				//writeToScreen("SENT: " + message);  
+				console.log("Sent: ", new Uint8Array(message));
+				websocket.send(message); 
+			}  
+			function writeToScreen(message) { 
+				//var pre = document.createElement("p"); 
+				//pre.style.wordWrap = "break-word"; 
+				output.innerHTML += message.replace(/</g,"&lt;"); 
+				//output.appendChild(pre); 
+			}  
+			window.addEventListener("load", init, false);  
+		</script>
+	</head>
+	<body>
+		<pre id="output"></div>
+	</body>
+</html>

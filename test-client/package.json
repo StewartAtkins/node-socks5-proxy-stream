@@ -1,0 +1,12 @@
+{
+  "name": "socks5-proxy-stream-test-client",
+  "version": "0.0.0",
+  "description": "A simple SOCKS v5 client to test the socks5-proxy-stream module",
+  "main": "index.js",
+  "private": true,
+  "author": "Stewart Atkins",
+  "license": "BSD",
+  "dependencies": {
+    "socks5-http-client": "^0.1.6"
+  }
+}

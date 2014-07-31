@@ -1,0 +1,9 @@
+{
+  "name": "socks5-proxy-stream-tcp-demo",
+  "version": "0.0.0",
+  "description": "A simple demo of the socks5-proxy-stream module over tcp",
+  "main": "index.js",
+  "private": true,
+  "author": "Stewart Atkins",
+  "license": "BSD"
+}
