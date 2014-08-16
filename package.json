@@ -1,6 +1,6 @@
 {
   "name": "socks5-proxy-stream",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A SOCKS v5 proxy implemented as a Node duplex stream",
   "main": "index.js",
   "repository": {

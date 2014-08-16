@@ -102,7 +102,6 @@ Socks5Proxy.prototype.createConnection = function(reqType, addr, port){
 	this.client.on("error", function(error){
 		if(me.state === states.WAIT_CONNECTION_ESTABLISHING){
 			//No easy way to tell what happened
-			console.log(error, addr, port);
 			me.createConnectErrorResponse(errors.NET_UNREACH);
 		}
 	});
@@ -137,8 +136,8 @@ Socks5Proxy.prototype.createConnection = function(reqType, addr, port){
 		}else if(net.isIPv6(this.localAddress)){
 			subBuf = new Buffer(17);
 			subBuf.writeUInt8(addrTypes.IPV6, 0);
-			console.log("local Addr is IPV6");
-			throw new Error();
+			//console.log("local Addr is IPV6");
+			throw new Error("Local address is ipv6, unsupported");
 		}else{
 			var strLen = Buffer.byteLength(this.localAddress, "utf8");
 			subBuf = new Buffer(strLen + 2);
