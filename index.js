@@ -2,6 +2,7 @@ var stream = require('stream');
 var util = require('util');
 var Duplex = stream.Duplex;
 var net = require("net");
+var punycode = require("punycode");
 
 var states = {
 	WAIT_HELLO: 0,
@@ -143,7 +144,8 @@ Socks5Proxy.prototype.createConnection = function(reqType, addr, port){
 			subBuf = new Buffer(strLen + 2);
 			subBuf.writeUInt8(addrTypes.DNS, 0);
 			subBuf.writeUInt8(strLen, 1);
-			subBuf.write(this.localAddress, 1, "utf8");
+			//toUnicode should only affect punycoded parts of the domain name
+			subBuf.write(punycode.toUnicode(this.localAddress), 1, "utf8");
 		}
 		var response = new Buffer(5 + subBuf.length);
 		response.writeUInt8(SOCKS_VERSION, 0);
@@ -219,6 +221,8 @@ Socks5Proxy.prototype._write = function (chunk, enc, cb) {
 			//DNS address
 			var addrLen = chunk.readUInt8(readPos++);
 			addr = chunk.toString("utf8", readPos, readPos + addrLen);
+			//toASCII shouldn't affect plain ASCII domain names, but will allow use of IDNs
+			addr = punycode.toASCII(addr);
 			readPos += addrLen;
 		}else if(addrType === addrTypes.IPV6){
 			//ipv6 address
